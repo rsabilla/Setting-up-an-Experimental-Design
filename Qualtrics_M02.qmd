@@ -1,0 +1,165 @@
+---
+title: "Qualtrics Assignment 2: Social Media Opinion Leader, Experimental Design"
+author: "Ron Stephen Sabilla"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    embed-resources: true
+    theme: cosmo
+    fig-align: center
+---
+
+## Overview
+
+For this assignment I edited the *Social Media Opinion Leader* Qualtrics survey to turn it into a between-subjects experiment. Each participant is randomly shown **one** of two ad types (a social media review or a traditional ad), and then everyone answers the same set of dependent variable (DV) questions. I also fixed the social media usage question (Q2.2) so it captures time spent on **each** platform, and made three improvements to the overall questionnaire.
+
+------------------------------------------------------------------------
+
+## Task 1: Renaming the Project
+
+I clicked the project title at the top of the survey builder and renamed it to **Social Media Opinion Leader-Experimental Design**. The new name shows up in both the header bar and the survey title.
+
+![The project renamed to "Social Media Opinion Leader-Experimental Design"](Task-one.png)
+
+------------------------------------------------------------------------
+
+## Task 2: Reviewing the Survey Structure
+
+Before making changes, I went through every block in the survey:
+
+1.  **Cover Page**: introduces the study
+2.  **Overall Social Media Experience**: how people use social media (this is where Q2.2 lives)
+3.  **External Information Source**: where people get product information
+4.  **Opinion Leaders**: questions about influencers and opinion leaders
+5.  **social_media_review**: ad condition A
+6.  **ads**: ad condition B
+7.  **DV**: the dependent variables (attitude toward the ad, purchase intention), asked of *everyone*
+8.  **Purchasing Behavior**
+9.  **Demographics**
+
+Blocks 5, 6, and 7 are the core of the experiment. Participants should see only **one** of the two ad blocks, and then all of them should answer the DV block, so the two groups can be compared fairly.
+
+<!--
+  OPTIONAL: add a screenshot of the ORIGINAL survey flow (before the randomizer) here.
+  Save it as images/02-original-survey-flow.png and remove these comment markers.
+
+![The original survey flow, showing all nine blocks](images/02-original-survey-flow.png)
+-->
+
+------------------------------------------------------------------------
+
+## Task 3: Random Assignment
+
+### Why random assignment?
+
+To compare the two ad types scientifically, the two groups of participants need to be equivalent on everything (age, gender, attitude toward Nike, social media habits, and so on) *except* for the ad they see. Random assignment does that. When people are placed into a condition at random, the groups end up the same on average, so any difference in the DV results can be credited to the ad type itself and not to who happened to be in each group.
+
+### Step 1: Adding the Randomizer
+
+In **Survey Flow**, I added a **Randomizer** right after the first *Set Embedded Data* element, which is the earliest point after each participant is assigned an ID. Inside the randomizer I added two *Set Embedded Data* elements:
+
+-   `Ad Type = review`
+-   `Ad Type = ads`
+
+The randomizer is set to **randomly present 1 of the following elements**, with **Evenly Present Elements** checked, so each participant is tagged with exactly one condition and the two groups stay roughly equal in size.
+
+![Randomizer in Survey Flow with the two Ad Type conditions and "Evenly Present Elements" checked](random-assignment.png)
+
+### Step 2: Routing participants to the correct ad
+
+Next, I added two **Branch** elements above the ad blocks:
+
+-   **If** `Ad Type` **is equal to** `review` → show the **social_media_review** block
+-   **If** `Ad Type` **is equal to** `ads` → show the **ads** block
+
+The **DV** block sits *below and outside* both branches, so every participant answers the same questions no matter which ad they saw.
+
+<!--
+  ADD: screenshot of the two Branch elements in Survey Flow.
+  Save it as images/03-branches.png and remove these comment markers.
+
+![Branch logic routing each condition to its ad block, with the DV block below both branches](images/03-branches.png)
+-->
+
+### Step 3: Testing in Preview
+
+I previewed the survey several times to confirm that each run showed only one ad, and that different runs showed different ads.
+
+<!--
+  ADD: one preview screenshot of each ad condition.
+  Save them as images/03-preview-review.png and images/03-preview-ads.png, then remove these comment markers.
+
+![Preview run showing the social media review condition](images/03-preview-review.png)
+
+![Preview run showing the ad condition](images/03-preview-ads.png)
+-->
+
+------------------------------------------------------------------------
+
+## Task 4: Fixing Q2.2
+
+### The problem
+
+The original Q2.2 asked, *"How often do you use social media platforms (e.g. Facebook, Instagram, Twitter, Snapchat)?"* That gives one total for all platforms combined, so there's no way to tell how much time someone spends on a specific platform. Just asking which platform someone uses *most often* doesn't solve it either, since most people use several platforms.
+
+### The fix
+
+**Part 1: Q2.2 became a "select all that apply" question.** I reworded Q2.2 to *"Which of the following social media platforms do you use? (Select all that apply)"* and changed the answer type to **Allow multiple answers**. The choices are Facebook, Instagram, TikTok, X (Twitter), Snapchat, YouTube, Other (with a text box), and *I don't use social media*, which is set as an exclusive answer.
+
+<!--
+  ADD: screenshot of the edited Q2.2 with the left panel showing "Allow multiple answers" selected.
+  Save it as images/04-q22-multiple-answers.png and remove these comment markers.
+
+![Edited Q2.2 with "Allow multiple answers" selected in the left panel](images/04-q22-multiple-answers.png)
+-->
+
+**Part 2: A matrix question with Carry Forward.** Right after Q2.2, I added a **Matrix table** question: *"On average, how much time do you spend on each platform per day?"* Using **Carry forward statements**, the rows are pulled from the **Selected Choices** in Q2.2, so each participant only rates the platforms they actually use. The columns are: Less than 1 hour, 1–2 hours, 3–4 hours, 5–6 hours, and More than 6 hours. The ranges don't overlap and cover every possible answer.
+
+I also added **Display Logic** so the matrix only shows when *I don't use social media* is **Not Selected** in Q2.2. That way, people who don't use social media skip it entirely.
+
+![Matrix question with Carry Forward from Q2.2 (Selected Choices) and Display Logic applied](Improvement-2.2.png)
+
+<!--
+  OPTIONAL: preview screenshot showing the matrix listing only the platforms you picked.
+  Save it as images/04-preview-matrix.png and remove these comment markers.
+
+![Preview: the matrix only lists the platforms selected in Q2.2](images/04-preview-matrix.png)
+-->
+
+------------------------------------------------------------------------
+
+## Task 5: Improving the Questionnaire
+
+### Improvement 1: Manipulation check
+
+I added a manipulation check right after the ad and before the DV questions, asking participants *"What type of content did you just see?"* The choices are *A social media review*, *An advertisement*, and *I don't remember*.
+
+Since this is an experiment comparing a social media review to an ad, we need to confirm participants actually noticed which one they were shown. If someone can't correctly identify their condition, their DV answers can't reliably be tied to the ad type, so this lets us filter them out and keeps the comparison between the two groups valid.
+
+![Manipulation check question placed just before the DV block](Improvement-one.png)
+
+### Improvement 2: Custom end-of-survey message
+
+I replaced the default ending with a custom thank-you message: *"Thank you for participating! Your responses have been recorded and will help us understand how people respond to social media content."*
+
+It gives the survey a more professional finish, confirms the participant's responses were recorded, and leaves them with a good impression of the research.
+
+![Custom end-of-survey message set in the End of Survey options](improvement-two.png)
+
+### Improvement 3: "Prefer not to say" option
+
+I added *Prefer not to say* to the sensitive demographic questions, like Q9.3 (sex).
+
+Without it, people who don't want to share either quit the survey or pick a random answer, which hurts data quality. This gives them an honest way out.
+
+![Q9.3 in the Demographics block with the added "Prefer not to say" option](improvement-three.png)
+
+------------------------------------------------------------------------
+
+## Appendix
+
+-   **Qualtrics Survey:** [https://PASTE-YOUR-QUALTRICS-SURVEY-LINK-HERE](https://PASTE-YOUR-QUALTRICS-SURVEY-LINK-HERE)
+-   **GitHub Repository:** [https://github.com/YOUR-USERNAME/YOUR-REPO-NAME](https://github.com/YOUR-USERNAME/YOUR-REPO-NAME)
